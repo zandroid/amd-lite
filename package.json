@@ -1,0 +1,21 @@
+{
+  "name": "amd-lite",
+  "version": "1.0.1",
+  "description": "JavaScript AMD lite implementation",
+  "main": "amd.js",
+  "repository": "git://github.com/zandroid/amd-lite.git",
+  "url": "http://github.com/zandroid/amd-lite",
+  "keywords": [
+    "AMD"
+  ],
+  "author": "Andrey Zaytsev",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/zandroid/amd-lite/issues"
+  },
+  "devDependencies": {
+    "grunt": "~0.4",
+    "grunt-contrib-jshint": "~0.6",
+    "grunt-contrib-uglify": "~0.2"
+  }
+}

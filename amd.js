@@ -1,5 +1,5 @@
-/*
- * AMD lite implementation 1.0.0
+/**
+ * AMD lite implementation
  * https://github.com/zandroid/amd-lite
  *
  * Copyright (c) 2014 Andrey Zaytsev
@@ -37,14 +37,14 @@ function define( name, dependencies, module ) {
     }
 
     if ( name in _modules ) {
-        throw new Error( 'Redefining module "' + name + '"' );
+        throw new Error( 'Redefinition of module "' + name + '"' );
     }
 
     if ( !Array.isArray(dependencies) ) {
         if ( typeof dependencies === 'string' ) {
             dependencies = dependencies.split(' ');
         }
-        else if ( dependencies == undefined ) {
+        else if ( dependencies === undefined ) {
             dependencies = asis ? [] : [ 'require', 'exports', 'module' ];
         }
         else {
@@ -139,7 +139,7 @@ function _build( stack, m ) {
     }
 
     if ( define.verbose && isModule ) {
-        console.log( 'Try to build module "' + name + '" with stack: ' + stack.join( ' > ' ) );
+        console.log( 'Trying to build module "' + name + '", stack: ' + stack.join( ' > ' ) );
     }
 
     deps = [];
@@ -165,14 +165,14 @@ function _build( stack, m ) {
                 if ( dep === undefined ) {
 
                     if ( define.verbose ) {
-                        console.log( isModule ? 'Module "' + name + '" awaits "' + depName + '"' : 'Module "' + depName + '" is awaited' );
+                        console.log( isModule ? 'Module "' + name + '" awaits for "' + depName + '"' : 'Module "' + depName + '" is awaited' );
                     }
 
                     dep = _expected[ depName ];
                     if ( !dep ) {
                         _expected[ depName ] = {
                             targets: [ m ]
-                        }
+                        };
                     }
                     else if ( dep.targets.indexOf( m ) === -1 ) {
                         dep.targets.push( m );
@@ -225,7 +225,7 @@ define.clean = function() {
     define._expected = _expected = {};
 
     if ( define.verbose ) {
-        console.log( 'AMD base is clean' );
+        console.log( 'AMD list is clean' );
     }
 };
 

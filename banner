@@ -1,0 +1,8 @@
+/**
+ * AMD lite implementation <%= pkg.version %>
+ * https://github.com/zandroid/amd-lite
+ *
+ * Copyright (c) 2014 Andrey Zaytsev
+ * MIT License
+ *
+ */

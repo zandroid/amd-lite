@@ -31,17 +31,17 @@ Simple definition of object as module
 
     define( 'a', { name: 'module A' } );
 
-Classic module definitions with dependencies and without
+Classic module definitions with and without dependencies
 
     define( 'a', [ 'b', 'c' ], function( b, c ) { ... } );
     define( 'b', function( require, exports, module ) { ... } );
 
-Dependencies can be declared as a string (single dependency or list, separated by a space)
+Dependencies can be declared as a string (single dependency or space separated list)
 
     define( 'a', 'b', function( b ) { ... } );
     define( 'b', 'c d', function( c, d ) { ... } );
 
-A function can be defined as a module body with help of `define.asis`
+Function can be defined as a module body using `define.asis`
 
     function f() {}
     
@@ -54,7 +54,7 @@ A function can be defined as a module body with help of `define.asis`
         // m === f
     } );
     
-Empty module is correct
+You can define an empty module
 
     jQuery( document ).ready( function() {
         define( 'domReady' );
@@ -68,7 +68,7 @@ Require module immediately
 
     var a = require( 'a' ); // returns module or throws error
     
-Wait module definition
+Delayed module definition
 
     require( [ 'a', 'b' ], function( a, b ) { ... } ); // no errors
     
@@ -77,18 +77,18 @@ Wait module definition
         define( 'b', {} );
     }, 1000 );
     
-Require can be called without callback or with many arguments
+`require` can be called without the callback parameter or with multiple arguments
 
-    require( [ 'a' ] );  // waits definition and initialize it immediately
-    require( 'a', 'b' ); // equals the follwing
+    require( [ 'a' ] );  // waits for the module definition and initializes it immediately
+    require( 'a', 'b' ); // equals to the following
     require( [ 'a', 'b' ] );
     
-    require( 'a', 'b', 'c', function( a, b, c ) { ... } );
+    require( 'a', 'b', 'c', function( a, b, c ) { ... } ); // it works
     
-Lazy initialization can be disabled
+Lazy (default) and eager module initialization modes
 
     define( 'a', function() {
-        // this factory will not be called until the module 'a' is required
+        // this factory will not be called until module 'a' is required
     } );
 
     define.lazy = false;
@@ -97,13 +97,13 @@ Lazy initialization can be disabled
         // this factory will be called immediately
     } );
     
-If you enable verbose mode you can see logging of modules definitions, requires and builds in JavaScript console.
+Enable verbose mode to trace definitions, requires and builds in JavaScript console
 
     define.verbose = true;
     
     define( 'a', function() {} );
     // >> Module "a" is defined
-    require( 'a' )
+    require( 'a' );
     // >> Module "a" is required
     // >> Module "a" is built
     
