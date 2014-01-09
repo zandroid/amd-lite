@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Test not lazy AMD</title>
+    <link rel="stylesheet" href="qunit/qunit.css">
+</head>
+<body>
+    <div id="qunit"></div>
+    <div id="qunit-fixture"></div>
+    <script src="qunit/qunit.js"></script>
+    <script src="../amd.js"></script>
+    <script>
+        define.lazy = false;
+        test( 'test not lazy AMD', function() {
+            expect( 3 );
+
+            define( 'a', function() {
+                ok( true, 'factory "a" is called' );
+            } );
+
+            define( 'b', [ 'c' ], function( c ) {
+                ok( true, 'factory "b" is called' );
+            } );
+
+            define( 'c', [ 'a' ], function(a) {
+                ok( true, 'factory "c" is called' );
+            } );
+        } );
+    </script>
+    <div>
+        <a href="index.html">Main tests of AMD</a>
+    </div>
+</body>
+</html>
