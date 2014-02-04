@@ -27,6 +27,22 @@ Features
 Usage
 -----
 
+Initially both methods `define` and `require` are declared as a part of the `AMD` namespace.
+But you can import them into any object with help of the `namespace` method.
+
+    // usage of default namespace
+    AMD.define( 'm', factory );
+    var m = AMD.require( 'm' );
+
+    // import functions to custom namespace
+    var app = {};
+    AMD.namespace( app );
+    app.define( 'm', factory );
+
+    // import functions to the global scope
+    AMD.namespace( window );
+    define( 'm', factory );
+
 Simple definition of object as module
 
     define( 'a', { name: 'module A' } );
@@ -106,12 +122,3 @@ Enable verbose mode to trace definitions, requires and builds in JavaScript cons
     require( 'a' );
     // >> Module "a" is required
     // >> Module "a" is built
-    
-`define.noConflict()` returns `define` function and restores previous values of global `define` and `require`.
-
-    var d = define.noConflict();
-    // window.define => undefined
-    // window.require => undefined
-    d( 'a', {} );
-    var a = d.require( 'a' );
-
