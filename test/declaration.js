@@ -10,7 +10,6 @@ test( 'main functions are defined', function() {
 
     ok( typeof define.asis === 'function', '"define.asis" ia function' );
     ok( typeof define.clean === 'function', '"define.clean" ia function' );
-    ok( typeof define.noConflict === 'function', '"define.clean" ia function' );
 
 } );
 

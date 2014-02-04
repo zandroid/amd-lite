@@ -197,7 +197,7 @@ function _build( stack, m ) {
 
         if ( name in _expected ) {
             e = _expected[ name ].targets;
-            e.forEach( _build.bind( glob, [] ) );
+            e.forEach( _build.bind( null, [] ) );
             delete _expected[ name ];
         }
 
@@ -207,9 +207,7 @@ function _build( stack, m ) {
     return undefined;
 }
 
-define.amd = {
-    jQuery: true
-};
+define.amd = {};
 
 define._modules = _modules;
 define._expected = _expected;
@@ -231,17 +229,14 @@ define.clean = function() {
 
 define.require = require;
 
-var __define = glob.define,
-    __require = glob.require;
-
-glob.define = define;
-glob.require = require;
-
-define.noConflict = function() {
-    glob.define = __define;
-    glob.require = __require;
-
-    return define;
+glob.AMD = {
+    define: define,
+    require: require,
+    namespace: function( obj ) {
+        obj = obj || {};
+        obj.define = define;
+        obj.require = require;
+    }
 };
 
-} )( window );
+} )( this );

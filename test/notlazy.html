@@ -11,6 +11,7 @@
     <script src="qunit/qunit.js"></script>
     <script src="../amd.js"></script>
     <script>
+        AMD.namespace( this );
         define.lazy = false;
         test( 'test not lazy AMD', function() {
             expect( 3 );
