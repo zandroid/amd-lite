@@ -1,6 +1,6 @@
 {
   "name": "amd-lite",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "JavaScript AMD lite implementation",
   "main": "amd.js",
   "repository": "git://github.com/zandroid/amd-lite.git",

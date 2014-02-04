@@ -93,6 +93,41 @@ test( 'define + require + callback', function() {
 
 } );
 
+test( 'require before define', function() {
+    expect( 7 );
+
+    var a = {},
+        f = true;
+
+    require( 'a', function( m ) {
+        f = false;
+        strictEqual( m, a, 'module is defined' );
+    } );
+
+    ok( f, 'module A is expected' );
+
+    define( 'a', a );
+
+    ok( !f, 'module A is provided' );
+
+    f = true; // reset flag
+
+    require( 'b', function( m ) {
+        f = false;
+        strictEqual( m, a, 'module B is defined' );
+    } );
+
+    ok( f, 'module B is expected' );
+
+    define( 'b', function() {
+        ok( true, 'factory is called' );
+        return a;
+    } );
+
+    ok( !f, 'module B is provided' );
+
+} );
+
 test( 'factory is called once', function() {
     expect( 8 );
 

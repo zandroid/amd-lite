@@ -126,6 +126,7 @@ function _build( stack, m ) {
         e = false;
 
     if ( 'exports' in m ) {
+        _check( name );
         return m;
     }
 
@@ -195,16 +196,20 @@ function _build( stack, m ) {
             console.log( 'Module "' + name + ' is built' );
         }
 
-        if ( name in _expected ) {
-            e = _expected[ name ].targets;
-            e.forEach( _build.bind( null, [] ) );
-            delete _expected[ name ];
-        }
-
+        _check( name );
         return m;
     }
 
     return undefined;
+}
+
+function _check( name ) {
+    var t;
+    if ( name in _expected ) {
+        t = _expected[ name ].targets;
+        delete _expected[ name ];
+        t.forEach( _build.bind( null, [] ) );
+    }
 }
 
 define.amd = {};
