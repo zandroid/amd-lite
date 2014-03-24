@@ -94,7 +94,7 @@ test( 'define + require + callback', function() {
 } );
 
 test( 'require before define', function() {
-    expect( 7 );
+    expect( 11 );
 
     var a = {},
         f = true;
@@ -125,6 +125,18 @@ test( 'require before define', function() {
     } );
 
     ok( !f, 'module B is provided' );
+
+    require( [ 'c' ] );
+    define( 'c', function() {
+        ok( true, 'factory is called' );
+        return a;
+    } );
+
+    define.required( 'd', [ 'a', 'b' ], function( ma, mb ) {
+        ok( true, 'module D is not lazy' );
+        strictEqual( ma, a, 'dependency A resolved' );
+        strictEqual( mb, a, 'dependency B resolved' );
+    } );
 
 } );
 

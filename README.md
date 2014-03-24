@@ -23,6 +23,9 @@ Features
  * Lazy modules initialization and not lazy mode
  * Arguments validation (detailed errors)
  * Verbose mode
+
+
+AMD lite is Copyright &copy; 2013-2014 [Andrey Zaytsev](https://github.com/zandroid) the [MIT license](LICENSE).
  
 Usage
 -----
@@ -107,10 +110,17 @@ Lazy (default) and eager module initialization modes
         // this factory will not be called until module 'a' is required
     } );
 
+    define.required( 'b', function() {
+        // this factory will be called immediately
+    } );
+
     define.lazy = false;
     
-    define( 'b', function() {
-        // this factory will be called immediately
+    define( 'c', function() {
+        // this and following factories will be called immediately
+    } );
+    define( 'd', function() {
+        // ...
     } );
     
 Enable verbose mode to trace definitions, requires and builds in JavaScript console

@@ -223,6 +223,11 @@ define.asis = function( name, module ) {
     define( true, name, module );
 };
 
+define.required = function( name, dependencies, module ) {
+    require( [ name ] );
+    define.apply( this, arguments );
+};
+
 define.clean = function() {
     define._modules = _modules = {};
     define._expected = _expected = {};
