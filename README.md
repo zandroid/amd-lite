@@ -25,7 +25,7 @@ Features
  * Verbose mode
 
 
-AMD lite is Copyright &copy; 2013-2014 [Andrey Zaytsev](https://github.com/zandroid) the [MIT license](LICENSE).
+AMD lite is Copyright &copy; 2014 [Andrey Zaytsev](https://github.com/zandroid) the [MIT license](LICENSE).
  
 Usage
 -----
