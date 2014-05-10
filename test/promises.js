@@ -15,7 +15,7 @@ asyncTest( 'Support native Promise that will be resolved', function() {
     
     throws( function() {
         require( 'a' );
-    }, /is not defined/, 'Module is not defined' );
+    }, /cannot be built/, 'Module cannot be built' );
     
     require( 'a', function( m ) {
         strictEqual( a, m, 'Module is loaded' );
@@ -24,14 +24,16 @@ asyncTest( 'Support native Promise that will be resolved', function() {
     setTimeout( function() {
         throws( function() {
             require( 'a' );
-        }, /is not defined/, 'Module is not defined (2)' );
-        
+        }, /cannot be built/, 'Module cannot be built (2)' );
+
         p.resolve( a );
-        
-        strictEqual( a, require( 'a' ), 'Module is loaded (2)' );
-        
-        start();
     }, 100 );
+
+    setTimeout( function() {
+        strictEqual( a, require( 'a' ), 'Module is loaded (2)' );
+
+        start();
+    }, 200 );
 } );
 
 asyncTest( 'Support native Promise that will be rejected', function() {
@@ -49,7 +51,7 @@ asyncTest( 'Support native Promise that will be rejected', function() {
     
     throws( function() {
         require( 'a' );
-    }, /is not defined/, 'Module is not defined' );
+    }, /cannot be built/, 'Module cannot be built' );
     
     require( 'a', function( m ) {
         strictEqual( a, m, 'Module is loaded' );
@@ -60,20 +62,24 @@ asyncTest( 'Support native Promise that will be rejected', function() {
     setTimeout( function() {
         throws( function() {
             require( 'a' );
-        }, /is not defined/, 'Module is not defined (2)' );
+        }, /cannot be built/, 'Module cannot be built (2)' );
         
         start();
     }, 100 );
 } );
 
-test( 'Support native Promise that was be resolved', function() {
+asyncTest( 'Support native Promise that was be resolved', function() {
     expect( 1 );
     
     var a = {};
     
     define( 'a', Promise.resolve( a ) );
-    
-    strictEqual( a, require( 'a' ), 'Module is loaded' );
+
+    setTimeout( function() {
+        strictEqual( a, require( 'a' ), 'Module is loaded' );
+
+        start();
+    }, 100 );
 } );
 
 asyncTest( 'Support native Promise that was be rejected', function() {
@@ -85,13 +91,14 @@ asyncTest( 'Support native Promise that was be rejected', function() {
     
     throws( function() {
         require( 'a' );
-    }, /is not defined/, 'Module is not defined' );
+    }, /cannot be built/, 'Module cannot be built' );
     
     setTimeout( function() {
         throws( function() {
             require( 'a' );
-        }, /is not defined/, 'Module is not defined (2)' );
-        
+        }, /cannot be built/, 'Module cannot be built (2)' );
+
+        start();
     }, 100 );
 } );
 
@@ -112,7 +119,7 @@ test( 'Support thenable object that contains "done" method', function() {
     
     var t = {
             then: function( done, fail ) {
-                ok( typeof done === 'function', '"then" is called' );
+                ok( false, '"then" should not be called' );
             },
             done: function( callback ) {
                 ok( typeof callback === 'function', '"done" is called' );
@@ -120,4 +127,37 @@ test( 'Support thenable object that contains "done" method', function() {
         };
     
     define( 'a', t );
+} );
+
+asyncTest( 'Support promise returned from factory', function() {
+    expect( 4 );
+
+    var a = {}, p = {};
+
+    define( 'a', function() {
+        return new Promise( function( resolve, reject ) {
+            p.resolve = resolve;
+            p.reject = reject;
+        } );
+    } );
+
+    throws( function() {
+        require( 'a' );
+    }, /cannot be built/, 'Module cannot be built' );
+
+    require( 'a', function( m ) {
+        strictEqual( a, m, 'Module is loaded' );
+    } );
+
+    setTimeout( function() {
+        throws( function() {
+            require( 'a' );
+        }, /cannot be built/, 'Module cannot be built (2)' );
+        p.resolve( a );
+    }, 100 );
+
+    setTimeout( function() {
+        strictEqual( a, require( 'a' ), 'Module is loaded (2)' );
+        start();
+    }, 200 );
 } );

@@ -13,11 +13,30 @@
 
 function noop() {}
 
+function logModuleIsBuilt( name ) {
+    console.log( 'Module "' + name + ' is built' );
+}
+
+function handlePromise( promise, descriptor ) {
+    var currentSession = _session;
+    ( promise.done || promise.then ).call( promise, function( result ) {
+        if ( currentSession === _session ) {
+            descriptor.exports = result;
+            if ( define.verbose ) {
+                logModuleIsBuilt( descriptor.name );
+            }
+            _check( descriptor.name );
+        }
+    } );
+}
+
 var _modules = {},
-    _expected = {};
+    _expected = {},
+    _session = Date.now();
 
 function define( name, dependencies, module ) {
-    var asis, m;
+    var currentSession = _session,
+        asis, m, thenable;
 
     if ( name === true ) {
         // define( asis === true, name, module );
@@ -29,8 +48,9 @@ function define( name, dependencies, module ) {
         // define( name, module );
         module = dependencies;
         dependencies = undefined;
-        asis = typeof module !== 'function';
+        asis = typeof module !== 'function' && !module.then;
     }
+    thenable = !asis && !!module.then;
 
     if ( typeof name !== 'string' ) {
         throw new Error( 'Module name is not a string' );
@@ -40,9 +60,12 @@ function define( name, dependencies, module ) {
         throw new Error( 'Redefinition of module "' + name + '"' );
     }
 
-    if ( !Array.isArray(dependencies) ) {
+    if ( asis || thenable ) {
+        dependencies = undefined;
+    }
+    else if ( !Array.isArray( dependencies ) ) {
         if ( typeof dependencies === 'string' ) {
-            dependencies = dependencies.split(' ');
+            dependencies = dependencies.split( ' ' );
         }
         else if ( dependencies === undefined ) {
             dependencies = asis ? [] : [ 'require', 'exports', 'module' ];
@@ -54,18 +77,26 @@ function define( name, dependencies, module ) {
 
     m = _modules[ name ] = {
         name: name,
-        dependencies: dependencies
+        dependencies: dependencies,
+        thenable: thenable
     };
-    m[ asis ? 'exports' : 'module' ] = module;
+    if ( asis ) {
+        m.exports = module;
+    }
+    else if ( thenable ) {
+        handlePromise( module, m );
+    }
+    else {
+        m.module = module;
+    }
 
     if ( define.verbose ) {
         console.log( 'Module "' + name + '" is defined' );
         if ( asis ) {
-            console.log( 'Module "' + name + '" is built' );
+            logModuleIsBuilt( name );
         }
     }
 
-    // look promises
     if ( name in _expected || define.lazy === false ) {
         _build( [], m );
     }
@@ -122,12 +153,17 @@ function require( dependencies, callback ) {
 function _build( stack, m ) {
     var name = m.name,
         isModule = name !== 'require',
+        currentSession = _session,
         module, deps,
         e = false;
 
     if ( 'exports' in m ) {
         _check( name );
         return m;
+    }
+
+    if ( m.thenable ) {
+        return undefined;
     }
 
     if ( isModule ) {
@@ -190,22 +226,31 @@ function _build( stack, m ) {
 
     if ( e ) {
         e = m.module.apply( module, deps );
-        m.exports = e !== undefined ? e : module.exports;
-
-        if ( define.verbose && isModule ) {
-            console.log( 'Module "' + name + ' is built' );
+        if ( e === undefined ) {
+            e = module.exports;
         }
+        if ( e.then ) {
+            m.thenable = true;
+            handlePromise( e, m );
+        }
+        else {
+            m.exports = e;
 
-        _check( name );
-        return m;
+            if ( define.verbose && isModule ) {
+                logModuleIsBuilt( name );
+            }
+
+            _check( name );
+            return m;
+        }
     }
 
     return undefined;
 }
 
-function _check( name ) {
+function _check( name, session ) {
     var t;
-    if ( name in _expected ) {
+    if ( ( !session || session === _session ) && name in _expected ) {
         t = _expected[ name ].targets;
         delete _expected[ name ];
         t.forEach( _build.bind( null, [] ) );
@@ -226,6 +271,7 @@ define.asis = function( name, module ) {
 define.clean = function() {
     define._modules = _modules = {};
     define._expected = _expected = {};
+    define._session = _session = Date.now();
 
     if ( define.verbose ) {
         console.log( 'AMD list is clean' );
