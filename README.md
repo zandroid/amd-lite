@@ -19,6 +19,7 @@ Features
  * Optional arguments
  * Smart arguments handling
  * Any object as module body (Object, Number, Null, Function, etc.)
+ * Support Promise ("thenable" object) as a module definition
  * Support 'require', 'exports' and 'module' as dependencies
  * Lazy modules initialization and not lazy mode
  * Arguments validation (detailed errors)
@@ -82,6 +83,25 @@ You can define an empty module
     require( 'domReady', function() {
         // ...
     } );
+
+A Promise ("thenable" object) can be used as a module definition
+
+    // usage of native Promise 
+    define( 'a', new Promise( function( resolver ) {
+        setTimeout( function() {
+            resolver( {} ); // asynchronous module definition
+        }, 1000 );
+    } );
+
+    // usage of jQuery Deferred
+    define( 'b', jQuery.ajax(
+        url: '/some/module.json'
+    ) );
+    
+    // or Promise can be returned from factory
+    define( 'c', [ 'jquery', 'cSettings' ], function( $, settings ) {
+        return $.ajax( settings );
+    } );
     
 Require module immediately
 
@@ -103,11 +123,15 @@ Delayed module definition
     require( [ 'a', 'b' ] );
     
     require( 'a', 'b', 'c', function( a, b, c ) { ... } ); // it works
-    
+
 Lazy (default) and eager module initialization modes
 
     define( 'a', function() {
         // this factory will not be called until module 'a' is required
+    } );
+    
+    define.required( 'b', function() {
+        // define module and require it immediately after definition
     } );
 
     define.required( 'b', function() {
