@@ -54,6 +54,12 @@ test( 'define + require', function() {
 
     define( true, 'e', e );
     strictEqual( require( 'e' ), e, 'function' );
+    
+    define( 'n1', null );
+    strictEqual( require( 'n1' ), null, 'null as a module body' );
+    
+    define( 'n2', function() { return null; } );
+    strictEqual( require( 'n2' ), null, 'null as a factory result' );
 
     define( 'f', function() { return f; } );
     strictEqual( require( 'f' ), f, 'factory' );

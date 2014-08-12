@@ -48,7 +48,7 @@ function define( name, dependencies, module ) {
         // define( name, module );
         module = dependencies;
         dependencies = undefined;
-        asis = typeof module !== 'function' && !module.then;
+        asis = !module || typeof module !== 'function' && !module.then;
     }
     thenable = !asis && !!module.then;
 
@@ -229,7 +229,7 @@ function _build( stack, m ) {
         if ( e === undefined ) {
             e = module.exports;
         }
-        if ( e.then ) {
+        if ( e && e.then ) {
             m.thenable = true;
             handlePromise( e, m );
         }
