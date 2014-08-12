@@ -161,3 +161,28 @@ asyncTest( 'Support promise returned from factory', function() {
         start();
     }, 200 );
 } );
+
+test( 'Disable promises by modules cleaning', function() {
+    expect( 0 );
+    
+    var a = {},
+        p;
+    
+    define( 'a', new Promise( function( resolve, reject ) {
+        p = {
+            resolve: resolve,
+            reject: reject
+        };
+    } ) );
+    
+    require( 'a', function() { ok( false ); } );
+    
+    define.clean();
+    
+    require( 'a', function() { ok( false ); } );
+    
+    define( 'a', new Promise( function( resolve, reject ) {} ) );
+    
+    p.resolve( 'a' );
+
+} );

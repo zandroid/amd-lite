@@ -35,8 +35,7 @@ var _modules = {},
     _session = Date.now();
 
 function define( name, dependencies, module ) {
-    var currentSession = _session,
-        asis, m, thenable;
+    var asis, m, thenable;
 
     if ( name === true ) {
         // define( asis === true, name, module );
@@ -153,7 +152,6 @@ function require( dependencies, callback ) {
 function _build( stack, m ) {
     var name = m.name,
         isModule = name !== 'require',
-        currentSession = _session,
         module, deps,
         e = false;
 
@@ -248,9 +246,9 @@ function _build( stack, m ) {
     return undefined;
 }
 
-function _check( name, session ) {
+function _check( name ) {
     var t;
-    if ( ( !session || session === _session ) && name in _expected ) {
+    if ( name in _expected ) {
         t = _expected[ name ].targets;
         delete _expected[ name ];
         t.forEach( _build.bind( null, [] ) );
