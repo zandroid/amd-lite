@@ -156,3 +156,8 @@ Enable verbose mode to trace definitions, requires and builds in JavaScript cons
     require( 'a' );
     // >> Module "a" is required
     // >> Module "a" is built
+
+Similar projects
+----------------
+
+* https://github.com/zouloux/amd-lite Minimal AMD / RequireJS implementation. No plugins, no loaders, only module resolving.
