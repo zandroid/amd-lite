@@ -162,3 +162,4 @@ Related projects
 
 * https://github.com/amdjs/amdjs-api Houses the Asynchronous Module Definition API
 * https://github.com/zouloux/amd-lite Minimal AMD / RequireJS implementation. No plugins, no loaders, only module resolving.
+* https://github.com/abadc0de/amdlite Minimal but complete AMD loader
